@@ -84,8 +84,8 @@ fun App(
                     ) }
                 ) {
                     Icon(
-                        imageVector = if(viewModel.isPlaying) Icons.Default.PlayArrow
-                                        else Icons.Default.Pause,
+                        imageVector = if(viewModel.isPlaying) Icons.Default.Pause
+                                        else Icons.Default.PlayArrow,
                         contentDescription = null
                     )
                 }

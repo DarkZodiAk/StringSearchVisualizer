@@ -44,6 +44,7 @@ class MainViewModel {
             is MainAction.SwitchAlgorithm -> { algorithm = action.algorithm }
             is MainAction.ExecuteSearch -> {
                 isSearchWorking = true
+                isPlaying = true
                 scope.launch { AppEventBus.sendEvent(AppEvent.Init(text, pattern, speed)) }
             }
             is MainAction.ModifySpeed -> {

@@ -1,5 +1,8 @@
 package bruteforce
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -8,8 +11,14 @@ import util.AppEvent
 
 class BFViewModel: AlgorithmViewModel() {
 
-    private var data = BFData()
+    //private var data = BFData()
     private var job: Job? = null
+
+    var state by mutableStateOf(BFState.START)
+    var i by mutableStateOf(0)
+    var j by mutableStateOf(0)
+    var n by mutableStateOf(0)
+    var m by mutableStateOf(0)
 
     override fun onEvent(event: AppEvent) {
         when(event) {
@@ -27,11 +36,13 @@ class BFViewModel: AlgorithmViewModel() {
             is AppEvent.Pause -> {
                 job?.cancel()
                 job = null
+                print("received pause event")
             }
             is AppEvent.Play -> {
                 job = scope.launch {
-                    while(data.state != BFState.END) {
-                        nextStep(speed)
+                    while(state != BFState.END) {
+                        nextStep()
+                        delay(speed)
                     }
                 }
             }
@@ -40,58 +51,72 @@ class BFViewModel: AlgorithmViewModel() {
                 job = null
                 textIndex = 0
                 lastIndex = textIndex + pattern.length - 1
-                data = BFData()
+                resetData()
             }
             is AppEvent.SkipToFinish -> {
                 scope.launch {
-                    while(data.state != BFState.END) {
-                        nextStep(0L)
+                    while(state != BFState.END) {
+                        nextStep()
                     }
                 }
             }
             is AppEvent.StepForward -> {
-                scope.launch { nextStep(0L) }
+                scope.launch { nextStep() }
             }
             else -> Unit
         }
     }
 
-    override suspend fun nextStep(delay: Long) {
-        when(data.state) {
+    private fun resetData() {
+        state = BFState.START
+        i = 0
+        j = 0
+        m = 0
+        n = 0
+    }
+
+    override suspend fun nextStep() {
+        when(state) {
             BFState.START -> {
-                data = BFData(n = text.length, m = pattern.length, state = BFState.COMPARING)
+                n = text.length
+                m = pattern.length
+                state = BFState.COMPARING
+                compIndex = 0
             }
             BFState.COMPARING -> {
-                if(data.j < data.m && text[data.i + data.j] == pattern[data.j]) {
-                    data = data.copy(state = BFState.MATCH)
+                if(j < m && text[i + j] == pattern[j]) {
+                    state = BFState.MATCH
                     message = "Соответствие"
-                } else if(data.j == data.m) {
-                    data = data.copy(state = BFState.END)
-                    message = "Строка найдена, начало на индексе ${data.i}"
+                } else if(j == m) {
+                    state = BFState.END
+                    message = "Строка найдена, начало на индексе $i"
                 } else {
-                    data = data.copy(state = BFState.MISMATCH)
+                    state = BFState.MISMATCH
                     message = "Несоответствие. Сдвиг строки на 1 символ вправо"
                 }
             }
             BFState.MATCH -> {
-                data = data.copy(j = data.j + 1, state = BFState.COMPARING)
+                j++
+                state = BFState.COMPARING
+                compIndex = compIndex!! + 1
+
             }
             BFState.MISMATCH -> {
-                data = data.copy(i = data.i + 1, j = data.i + 1)
-                if(data.i <= data.n - data.m) {
+                i++
+                j = 0
+                if(i <= n - m) {
 
                     textIndex++
                     lastIndex++
 
-                    data = data.copy(state = BFState.COMPARING)
+                    state = BFState.COMPARING
+                    compIndex = 0
                 } else {
-                    data = data.copy(state = BFState.END)
+                    state = BFState.END
                     message = "Строка не найдена"
                 }
             }
             BFState.END -> return
         }
-
-        delay(delay)
     }
 }

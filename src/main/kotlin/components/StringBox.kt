@@ -13,26 +13,33 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun StringBox(
     textChar: Char,
-    patternChar: Char? = null
+    patternChar: Char? = null,
+    outlined: Boolean
 ) {
     Column(
         modifier = Modifier.height(76.dp)
     ) {
-        CharBox(textChar)
+        CharBox(textChar, outlined)
         patternChar?.let {
             Spacer(modifier = Modifier.height(12.dp))
-            CharBox(patternChar)
+            CharBox(patternChar, outlined)
         }
     }
 }
 
 @Composable
-fun CharBox(char: Char) {
+fun CharBox(
+    char: Char,
+    outlined: Boolean
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(32.dp)
-            .border(1.dp, Color.Black)
+            .then (
+                if(outlined) Modifier.border(2.dp, Color.Red)
+                else Modifier.border(1.dp, Color.Black)
+            )
     ) {
         Text(
             text = char.toString(),

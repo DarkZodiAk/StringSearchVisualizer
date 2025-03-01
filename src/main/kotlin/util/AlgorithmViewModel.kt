@@ -22,6 +22,9 @@ abstract class AlgorithmViewModel {
     //Индекс последнего символа паттерна (тоже относительно текста). Должен обновляться при изменении textIndex
     var lastIndex by mutableStateOf(0)
         protected set
+    //Индекс сравниваемого символа. Нужен для пометки сравниваемых символов в UI
+    var compIndex by mutableStateOf<Int?>(null)
+        protected set
 
     var numComparisons by mutableStateOf(0)
         protected set
@@ -44,5 +47,5 @@ abstract class AlgorithmViewModel {
     }
 
     abstract fun onEvent(event: AppEvent)
-    abstract suspend fun nextStep(delay: Long)
+    abstract suspend fun nextStep()
 }
