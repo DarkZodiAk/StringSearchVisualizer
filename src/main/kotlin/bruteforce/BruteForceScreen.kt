@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +33,8 @@ fun BruteForceScreen(
                 StringBox(
                     textChar = ch,
                     patternChar = if(idx >= vm.textIndex && idx <= vm.lastIndex) vm.pattern[idx - vm.textIndex] else null,
-                    outlined = vm.compIndex != null && vm.textIndex + vm.compIndex!! == idx
+                    outlined = vm.compIndex != null && vm.textIndex + vm.compIndex!! == idx,
+                    matched = vm.compIndex != null && idx >= vm.textIndex && idx < vm.textIndex + vm.compIndex!!
                 )
             }
         }

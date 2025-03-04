@@ -1,5 +1,6 @@
 package components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -14,15 +15,16 @@ import androidx.compose.ui.unit.sp
 fun StringBox(
     textChar: Char,
     patternChar: Char? = null,
-    outlined: Boolean
+    outlined: Boolean,
+    matched: Boolean
 ) {
     Column(
         modifier = Modifier.height(76.dp)
     ) {
-        CharBox(textChar, outlined)
+        CharBox(textChar, outlined, false)
         patternChar?.let {
             Spacer(modifier = Modifier.height(12.dp))
-            CharBox(patternChar, outlined)
+            CharBox(patternChar, outlined, matched)
         }
     }
 }
@@ -30,7 +32,8 @@ fun StringBox(
 @Composable
 fun CharBox(
     char: Char,
-    outlined: Boolean
+    outlined: Boolean,
+    matched: Boolean
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -39,7 +42,7 @@ fun CharBox(
             .then (
                 if(outlined) Modifier.border(2.dp, Color.Red)
                 else Modifier.border(1.dp, Color.Black)
-            )
+            ).background(if(matched) Color.Green else Color.Unspecified)
     ) {
         Text(
             text = char.toString(),
