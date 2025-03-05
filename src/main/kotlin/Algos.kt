@@ -26,7 +26,7 @@ object Algos {
         if (m == 0) return 0
         if (n < m) return -1
 
-        val base = 256
+        val base = 65536
         val prime = 101  // A small prime number to perform modulo; in practice a larger prime is beneficial
 
         // Precompute the highest power of base needed (base^(m-1) % prime)

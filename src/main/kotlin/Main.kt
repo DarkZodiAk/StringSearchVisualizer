@@ -1,9 +1,6 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
@@ -18,8 +15,9 @@ import androidx.compose.ui.window.application
 import bruteforce.BFViewModel
 import bruteforce.BruteForceScreen
 import components.AppTextField
-import components.StringBox
 import components.TextMedium
+import rabin_karp.RKViewModel
+import rabin_karp.RabinKarpScreen
 import util.Algorithm
 import java.awt.Dimension
 
@@ -103,7 +101,7 @@ fun App(
             //Экран самого алгоритма
             when(viewModel.algorithm) {
                 Algorithm.BRUTE_FORCE -> { BruteForceScreen(BFViewModel()) }
-                Algorithm.RABIN_KARP -> { }
+                Algorithm.RABIN_KARP -> { RabinKarpScreen(RKViewModel()) }
                 Algorithm.KMP -> { }
                 Algorithm.BOYER_MOORE -> { }
             }
