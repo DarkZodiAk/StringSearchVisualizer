@@ -18,7 +18,6 @@ class RKViewModel: AlgorithmViewModel() {
     private var j = 0
 
 
-
     override fun resetData() {
         state = RKState.START
         n = 0
@@ -60,7 +59,7 @@ class RKViewModel: AlgorithmViewModel() {
                 if(j < m && text[i + j] == pattern[j]) {
                     numComparisons++
                     state = RKState.MATCH
-                    message = "Соответствие"
+                    message = "Соответствие, проверка символа правее"
                 } else if(j == m) {
                     finished = true
                     compIndex = null
@@ -83,10 +82,7 @@ class RKViewModel: AlgorithmViewModel() {
                 i++
                 j = 0
                 if(i <= n - m) {
-
-                    textIndex++
-                    lastIndex++
-
+                    shiftPattern(1)
                     //Пересчет хеш-суммы
                     textHash = (textHash - text[i-1].code.toLong() * h % prime + prime) % prime
                     textHash = (textHash * base + text[i-1 + m].code.toLong()) % prime

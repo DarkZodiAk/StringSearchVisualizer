@@ -44,21 +44,23 @@ class BMViewModel: AlgorithmViewModel() {
                     numComparisons++
                     addFirstMatched(1)
                     j--
-                    compIndex = compIndex!! - 1
-                } else {
                     if(j < 0) {
                         compIndex = null
                         finished = true
                         message = "Строка найдена, начало на индексе $s"
                     } else {
-                        clearMatch()
-                        numComparisons++
-                        lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
-                        s += maxOf(1, j - lastOccur)
-                        textIndex += maxOf(1, j - lastOccur)
-                        lastIndex += maxOf(1, j - lastOccur)
-                        state = BMState.SET_INDEX
+                        message = "Соответствие, проверка символа левее"
+                        compIndex = compIndex!! - 1
                     }
+                } else {
+                    clearMatch()
+                    numComparisons++
+                    lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
+                    val shift = maxOf(1, j - lastOccur)
+                    message = "Несоответствие, сдвиг подстроки на $shift"
+                    s += shift
+                    shiftPattern(shift)
+                    state = BMState.SET_INDEX
                 }
             }
         }

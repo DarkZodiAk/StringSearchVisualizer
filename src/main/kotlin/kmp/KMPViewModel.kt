@@ -38,23 +38,22 @@ class KMPViewModel: AlgorithmViewModel() {
                             finished = true
                             message = "Строка найдена, начало на индексе ${i-j}"
                         } else {
-                            message = "Соответствие"
+                            message = "Соответствие, проверка символа правее"
                             compIndex = compIndex!! + 1
                         }
                     } else {
                         clearMatch()
                         if (j != 0) {
-                            message = "Несоответствие. Сдвиг подстроки на ${j - lps[j - 1]}"
-                            textIndex += j - lps[j - 1]
-                            lastIndex += j - lps[j - 1]
+                            val shift = j - lps[j - 1]
+                            message = "Несоответствие. Сдвиг подстроки на $shift"
+                            shiftPattern(shift)
                             addLastMatched(lps[j - 1])
                             j = lps[j - 1]
                             compIndex = j
                         } else {
                             message = "Несоответствие. Сдвиг подстроки на 1"
                             i++
-                            textIndex++
-                            lastIndex++
+                            shiftPattern(1)
                         }
                     }
                 } else {
@@ -64,10 +63,7 @@ class KMPViewModel: AlgorithmViewModel() {
                 }
             }
             KMPState.MATCH -> {
-                /*i++
-                j++
-                state = KMPState.COMPARING
-                compIndex = compIndex!! + 1*/
+
             }
             KMPState.MISMATCH -> {
 
@@ -78,18 +74,17 @@ class KMPViewModel: AlgorithmViewModel() {
     private fun computeLPSArray() {
         val m = pattern.length
         lps = IntArray(m)
-        var length = 0 // length of the previous longest prefix suffix
+        var length = 0
         var i = 1
-        lps[0] = 0  // lps[0] is always 0
+        lps[0] = 0
 
         while (i < m) {
             if (pattern[i] == pattern[length]) {
                 length++
                 lps[i] = length
                 i++
-            } else { // (pattern[i] != pattern[length])
+            } else {
                 if (length != 0) {
-                    // Also, note that we do not increment i here
                     length = lps[length - 1]
                 } else {
                     lps[i] = 0

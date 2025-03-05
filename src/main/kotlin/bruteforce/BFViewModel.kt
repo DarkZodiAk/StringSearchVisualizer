@@ -1,17 +1,14 @@
 package bruteforce
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import util.AlgorithmViewModel
 
 class BFViewModel: AlgorithmViewModel() {
 
-    var state by mutableStateOf(BFState.START)
-    var i by mutableStateOf(0)
-    var j by mutableStateOf(0)
-    var n by mutableStateOf(0)
-    var m by mutableStateOf(0)
+    private var state = BFState.START
+    private var i = 0
+    private var j = 0
+    private var n = 0
+    private var m = 0
 
     override fun resetData() {
         state = BFState.START
@@ -33,7 +30,7 @@ class BFViewModel: AlgorithmViewModel() {
                 if(j < m && text[i + j] == pattern[j]) {
                     numComparisons++
                     state = BFState.MATCH
-                    message = "Соответствие"
+                    message = "Соответствие, проверка символа правее"
                 } else if(j == m) {
                     compIndex = null
                     finished = true
@@ -55,10 +52,7 @@ class BFViewModel: AlgorithmViewModel() {
                 i++
                 j = 0
                 if(i <= n - m) {
-
-                    textIndex++
-                    lastIndex++
-
+                    shiftPattern(1)
                     state = BFState.COMPARING
                     compIndex = 0
                 } else {

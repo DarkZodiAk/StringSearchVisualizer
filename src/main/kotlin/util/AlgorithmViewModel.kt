@@ -19,10 +19,10 @@ abstract class AlgorithmViewModel {
 
     //Индекс символа текста, относительно которого стартует паттерн поиска. В алгоритмах это копия переменной i.
     var textIndex by mutableStateOf(0)
-        protected set
+        private set
     //Индекс последнего символа паттерна (тоже относительно текста). Должен обновляться при изменении textIndex
     var lastIndex by mutableStateOf(0)
-        protected set
+        private set
     //Индекс сравниваемого символа относительно паттерна. Нужен для пометки сравниваемого символа в UI
     var compIndex by mutableStateOf<Int?>(null)
         protected set
@@ -49,11 +49,6 @@ abstract class AlgorithmViewModel {
         AppEventBus.bus.onEach { event ->
             onEvent(event)
         }.launchIn(scope)
-
-        /*snapshotFlow { textIndex }.onEach {
-            lastIndex = textIndex + pattern.length - 1
-            println("textIndex changed. LastIndex is $lastIndex")
-        }.launchIn(scope)*/
     }
 
     //Функция перехода в следующее состояние вьюмодели. Автомат определяется в наследнике.
@@ -65,7 +60,7 @@ abstract class AlgorithmViewModel {
     protected fun addFirstMatched(offset: Int) {
         if(offset < 0 || offset > pattern.length) throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
         if(matchedFirst == -1) {
-            matchedFirst = pattern.length - offset + 1
+            matchedFirst = pattern.length - offset
             matchedLast = pattern.length - 1
         } else {
             matchedFirst -= offset
@@ -87,6 +82,12 @@ abstract class AlgorithmViewModel {
     protected fun clearMatch() {
         matchedFirst = -1
         matchedLast = -1
+    }
+
+    //Функция сдвига паттерна относительно текста
+    protected fun shiftPattern(offset: Int) {
+        textIndex += offset
+        lastIndex += offset
     }
 
 
