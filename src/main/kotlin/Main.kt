@@ -13,11 +13,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import bruteforce.BFViewModel
-import bruteforce.BruteForceScreen
+import components.AlgorithmBlock
 import components.AppTextField
 import components.TextMedium
+import kmp.KMPViewModel
 import rabin_karp.RKViewModel
-import rabin_karp.RabinKarpScreen
 import util.Algorithm
 import java.awt.Dimension
 
@@ -100,21 +100,17 @@ fun App(
 
             //Экран самого алгоритма
             when(viewModel.algorithm) {
-                Algorithm.BRUTE_FORCE -> { BruteForceScreen(BFViewModel()) }
-                Algorithm.RABIN_KARP -> { RabinKarpScreen(RKViewModel()) }
-                Algorithm.KMP -> { }
+                Algorithm.BRUTE_FORCE -> {
+                    AlgorithmBlock(BFViewModel())
+                }
+                Algorithm.RABIN_KARP -> {
+                    AlgorithmBlock(RKViewModel())
+                }
+                Algorithm.KMP -> {
+                    AlgorithmBlock(KMPViewModel())
+                }
                 Algorithm.BOYER_MOORE -> { }
             }
-
-            /*LazyVerticalGrid(
-                columns = GridCells.FixedSize(32.dp),
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(32.dp)
-            ) {
-                items(viewModel.text.toList()) { ch ->
-                    StringBox(ch, 'a')
-                }
-            }*/
         }
     }
 }

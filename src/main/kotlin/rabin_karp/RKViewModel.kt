@@ -20,6 +20,7 @@ class RKViewModel: AlgorithmViewModel() {
 
 
     override fun resetData() {
+        state = RKState.START
         n = 0
         m = 0
         h = 1
@@ -69,10 +70,12 @@ class RKViewModel: AlgorithmViewModel() {
             }
             RKState.MATCH -> {
                 j++
+                addLastMatched(1)
                 state = RKState.COMP_PATTERN
                 compIndex = compIndex!! + 1
             }
             RKState.MISMATCH -> {
+                clearMatch()
                 compIndex = null
                 i++
                 j = 0
@@ -84,10 +87,6 @@ class RKViewModel: AlgorithmViewModel() {
                     //Пересчет хеш-суммы
                     textHash = (textHash - text[i-1].code.toLong() * h % prime + prime) % prime
                     textHash = (textHash * base + text[i-1 + m].code.toLong()) % prime
-                    /*textHash = (base * (textHash - text[i-1].code.toLong() * h) + text[i-1 + m].code.toLong()) % prime
-                    if (textHash < 0) {
-                        textHash += prime
-                    }*/
 
                     state = RKState.COMP_HASH
                 } else {

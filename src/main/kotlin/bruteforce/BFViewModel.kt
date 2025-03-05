@@ -44,11 +44,13 @@ class BFViewModel: AlgorithmViewModel() {
             }
             BFState.MATCH -> {
                 j++
+                addLastMatched(1)
                 state = BFState.COMPARING
                 compIndex = compIndex!! + 1
 
             }
             BFState.MISMATCH -> {
+                clearMatch()
                 i++
                 j = 0
                 if(i <= n - m) {

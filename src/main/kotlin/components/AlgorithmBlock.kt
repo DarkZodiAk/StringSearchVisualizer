@@ -1,4 +1,4 @@
-package rabin_karp
+package components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,15 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import components.StringBox
+import util.AlgorithmViewModel
 
 @Composable
-fun RabinKarpScreen(
-    vm: RKViewModel
-) {
+fun AlgorithmBlock(vm: AlgorithmViewModel) {
     Column(modifier = Modifier.padding(horizontal = 4.dp)) {
-        Text("textHash = ${vm.textHash}")
-        Text("patternHash = ${vm.patternHash}")
+        Text("Количество сравнений: ${vm.numComparisons}")
         Text(vm.message)
         LazyVerticalGrid(
             columns = GridCells.FixedSize(32.dp),
@@ -31,7 +28,7 @@ fun RabinKarpScreen(
                     textChar = ch,
                     patternChar = if(idx >= vm.textIndex && idx <= vm.lastIndex) vm.pattern[idx - vm.textIndex] else null,
                     outlined = vm.compIndex != null && vm.textIndex + vm.compIndex!! == idx,
-                    matched = vm.compIndex != null && idx >= vm.textIndex && idx < vm.textIndex + vm.compIndex!!
+                    matched = idx - vm.textIndex >= vm.matchedFirst && idx - vm.textIndex <= vm.matchedLast
                 )
             }
         }
