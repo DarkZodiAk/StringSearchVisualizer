@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import boyermoore.BMViewModel
 import bruteforce.BFViewModel
 import components.AlgorithmBlock
 import components.AppTextField
@@ -109,7 +110,9 @@ fun App(
                 Algorithm.KMP -> {
                     AlgorithmBlock(KMPViewModel())
                 }
-                Algorithm.BOYER_MOORE -> { }
+                Algorithm.BOYER_MOORE -> {
+                    AlgorithmBlock(BMViewModel())
+                }
             }
         }
     }

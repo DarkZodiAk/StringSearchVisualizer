@@ -46,6 +46,7 @@ class RKViewModel: AlgorithmViewModel() {
             }
 
             RKState.COMP_HASH -> {
+                numComparisons++
                 if (patternHash == textHash) {
                     state = RKState.COMP_PATTERN
                     message = "Соответствие хеш-сумм. Сравнение строк"
@@ -57,6 +58,7 @@ class RKViewModel: AlgorithmViewModel() {
             RKState.COMP_PATTERN -> {
                 compIndex = compIndex ?: 0
                 if(j < m && text[i + j] == pattern[j]) {
+                    numComparisons++
                     state = RKState.MATCH
                     message = "Соответствие"
                 } else if(j == m) {
@@ -64,6 +66,7 @@ class RKViewModel: AlgorithmViewModel() {
                     compIndex = null
                     message = "Строка найдена, начало на индексе $i"
                 } else {
+                    numComparisons++
                     state = RKState.MISMATCH
                     message = "Несоответствие. Сдвиг строки на 1 символ вправо"
                 }

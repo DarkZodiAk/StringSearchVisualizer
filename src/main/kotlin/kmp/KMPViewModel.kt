@@ -13,8 +13,6 @@ class KMPViewModel: AlgorithmViewModel() {
 
     override fun resetData() {
         state = KMPState.START
-        n = 0
-        m = 0
         i = 0
         j = 0
     }
@@ -30,6 +28,7 @@ class KMPViewModel: AlgorithmViewModel() {
             }
             KMPState.COMPARING -> {
                 if(i < n) {
+                    numComparisons++
                     if (pattern[j] == text[i]) {
                         i++
                         j++

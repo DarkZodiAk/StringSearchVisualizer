@@ -31,6 +31,7 @@ class BFViewModel: AlgorithmViewModel() {
             }
             BFState.COMPARING -> {
                 if(j < m && text[i + j] == pattern[j]) {
+                    numComparisons++
                     state = BFState.MATCH
                     message = "Соответствие"
                 } else if(j == m) {
@@ -38,6 +39,7 @@ class BFViewModel: AlgorithmViewModel() {
                     finished = true
                     message = "Строка найдена, начало на индексе $i"
                 } else {
+                    numComparisons++
                     state = BFState.MISMATCH
                     message = "Несоответствие. Сдвиг строки на 1 символ вправо"
                 }
@@ -47,7 +49,6 @@ class BFViewModel: AlgorithmViewModel() {
                 addLastMatched(1)
                 state = BFState.COMPARING
                 compIndex = compIndex!! + 1
-
             }
             BFState.MISMATCH -> {
                 clearMatch()
