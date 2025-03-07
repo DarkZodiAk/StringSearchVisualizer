@@ -18,6 +18,7 @@ import components.AlgorithmBlock
 import components.AppTextField
 import components.TextMedium
 import kmp.KMPViewModel
+import kotlinx.coroutines.launch
 import rabin_karp.RKViewModel
 import util.Algorithm
 import java.awt.Dimension
@@ -27,6 +28,15 @@ import java.awt.Dimension
 fun App(
     viewModel: MainViewModel
 ) {
+    val currentAlgorithmViewModel = remember(viewModel.algorithm) {
+        when (viewModel.algorithm) {
+            Algorithm.BRUTE_FORCE -> BFViewModel()
+            Algorithm.RABIN_KARP -> RKViewModel()
+            Algorithm.KMP -> KMPViewModel()
+            Algorithm.BOYER_MOORE -> BMViewModel()
+        }
+    }
+
     Row {
         Column(
             modifier = Modifier
@@ -56,13 +66,13 @@ fun App(
                 ) {
                     RadioButton(
                         selected = viewModel.algorithm == algo,
-                        onClick = { viewModel.onAction(MainAction.SwitchAlgorithm(algo)) }
+                        onClick = { viewModel.onAction(MainAction.SwitchAlgorithm(algo)) },
+                        enabled = !viewModel.isSearchWorking
                     )
                     Text(algo.text)
                 }
             }
         }
-
 
         Column(
             modifier = Modifier.fillMaxHeight()
@@ -74,13 +84,17 @@ fun App(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
             ) {
-                Button(onClick = { viewModel.onAction(MainAction.ExecuteSearch()) }) {
+                Button(
+                    onClick = { viewModel.onAction(MainAction.ExecuteSearch()) },
+                    enabled = !viewModel.isSearchWorking
+                ) {
                     Text("Поиск")
                 }
                 IconButton(
                     onClick = { viewModel.onAction(
                         if(viewModel.isPlaying) MainAction.Pause() else MainAction.Play()
-                    ) }
+                    ) },
+                    enabled = viewModel.isSearchWorking
                 ) {
                     Icon(
                         imageVector = if(viewModel.isPlaying) Icons.Default.Pause
@@ -100,7 +114,8 @@ fun App(
             Spacer(Modifier.height(16.dp))
 
             //Экран самого алгоритма
-            when(viewModel.algorithm) {
+            AlgorithmBlock(currentAlgorithmViewModel)
+            /*when(viewModel.algorithm) {
                 Algorithm.BRUTE_FORCE -> {
                     AlgorithmBlock(BFViewModel())
                 }
@@ -113,7 +128,7 @@ fun App(
                 Algorithm.BOYER_MOORE -> {
                     AlgorithmBlock(BMViewModel())
                 }
-            }
+            }*/
         }
     }
 }
@@ -121,10 +136,23 @@ fun App(
 fun main() = application {
     val viewModel = MainViewModel()
     Window(onCloseRequest = ::exitApplication) {
-        LaunchedEffect(true) {
+        LaunchedEffect(Unit) {
             window.minimumSize = Dimension(800, 450)
             window.title = "String Search Visualizer"
         }
-        App(viewModel)
+
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) {
+            LaunchedEffect(Unit) {
+                scope.launch {
+                    viewModel.error.collect { snackbarHostState.showSnackbar(it) }
+                }
+            }
+            App(viewModel)
+        }
     }
 }

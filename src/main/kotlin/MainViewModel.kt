@@ -4,8 +4,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import util.Algorithm
 import util.AppEvent
@@ -27,6 +29,8 @@ class MainViewModel {
         private set
 
     private val scope = CoroutineScope(Dispatchers.Default)
+    private val _error = Channel<String>()
+    val error = _error.receiveAsFlow()
 
     init {
         AppEventBus.bus.onEach { event ->
@@ -43,6 +47,19 @@ class MainViewModel {
             is MainAction.ModifyText -> { text = action.newText }
             is MainAction.SwitchAlgorithm -> { algorithm = action.algorithm }
             is MainAction.ExecuteSearch -> {
+                if(text.isEmpty()) {
+                    scope.launch { _error.send("Ошибка: Текст пустой") }
+                    return
+                }
+                if(pattern.isEmpty()) {
+                    scope.launch { _error.send("Ошибка: Искомая строка пустая") }
+                    return
+                }
+                if(pattern.length > text.length) {
+                    scope.launch { _error.send("Ошибка: Искомая строка больше текста") }
+                    return
+                }
+
                 isSearchWorking = true
                 isPlaying = true
                 scope.launch { AppEventBus.sendEvent(AppEvent.Init(text, pattern, speed)) }

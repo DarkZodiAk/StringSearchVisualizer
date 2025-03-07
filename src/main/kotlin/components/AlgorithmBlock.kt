@@ -15,6 +15,7 @@ import util.AlgorithmViewModel
 
 @Composable
 fun AlgorithmBlock(vm: AlgorithmViewModel) {
+    if(vm.initialized)
     Column(modifier = Modifier.padding(horizontal = 4.dp)) {
         Text("Количество сравнений: ${vm.numComparisons}")
         Text(vm.message)

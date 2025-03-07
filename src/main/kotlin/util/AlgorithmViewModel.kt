@@ -12,15 +12,18 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 abstract class AlgorithmViewModel {
+    var initialized by mutableStateOf(false)
+        private set
+
     var text by mutableStateOf("")
-        protected set
+        private set
     var pattern by mutableStateOf("")
-        protected set
+        private set
 
     //Индекс символа текста, относительно которого стартует паттерн поиска. В алгоритмах это копия переменной i.
     var textIndex by mutableStateOf(0)
         private set
-    //Индекс последнего символа паттерна (тоже относительно текста). Должен обновляться при изменении textIndex
+    //Индекс последнего символа паттерна (тоже относительно текста).
     var lastIndex by mutableStateOf(0)
         private set
     //Индекс сравниваемого символа относительно паттерна. Нужен для пометки сравниваемого символа в UI
@@ -58,7 +61,8 @@ abstract class AlgorithmViewModel {
 
     //Группа функций для управления отображением сравненных символов в UI
     protected fun addFirstMatched(offset: Int) {
-        if(offset < 0 || offset > pattern.length) throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
+        if(offset < 0 || offset > pattern.length)
+            throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
         if(matchedFirst == -1) {
             matchedFirst = pattern.length - offset
             matchedLast = pattern.length - 1
@@ -67,7 +71,8 @@ abstract class AlgorithmViewModel {
         }
     }
     protected fun addLastMatched(offset: Int) {
-        if(offset < 0 || offset > pattern.length) throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
+        if(offset < 0 || offset > pattern.length)
+            throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
         if(matchedFirst == -1) {
             matchedFirst = 0
             matchedLast = offset - 1
@@ -86,6 +91,8 @@ abstract class AlgorithmViewModel {
 
     //Функция сдвига паттерна относительно текста
     protected fun shiftPattern(offset: Int) {
+        if(textIndex + offset < 0 || lastIndex + offset > text.length)
+            throw IllegalArgumentException("Tried to shift pattern out of text range")
         textIndex += offset
         lastIndex += offset
     }
@@ -101,6 +108,7 @@ abstract class AlgorithmViewModel {
                 textIndex = 0
                 lastIndex = textIndex + pattern.length - 1
                 finished = false
+                initialized = true
                 onEvent(AppEvent.Play())
             }
             is AppEvent.ModifySpeed -> {
@@ -116,9 +124,11 @@ abstract class AlgorithmViewModel {
                         nextStep()
                         delay(speed)
                     }
+                    sendFinish()
                 }
             }
             is AppEvent.Reset -> {
+                if(!initialized) return
                 job?.cancel()
                 job = null
                 textIndex = 0
@@ -126,6 +136,7 @@ abstract class AlgorithmViewModel {
                 finished = false
                 clearMatch()
                 compIndex = null
+                initialized = false
                 resetData()
             }
             is AppEvent.SkipToFinish -> {
@@ -133,12 +144,20 @@ abstract class AlgorithmViewModel {
                     while(!finished) {
                         nextStep()
                     }
+                    sendFinish()
                 }
             }
             is AppEvent.StepForward -> {
                 scope.launch { nextStep() }
+                if(finished) sendFinish()
             }
             else -> Unit
+        }
+    }
+
+    private fun sendFinish() {
+        scope.launch {
+            AppEventBus.sendEvent(AppEvent.Finish())
         }
     }
 }
