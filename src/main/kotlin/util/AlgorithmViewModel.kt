@@ -24,10 +24,10 @@ abstract class AlgorithmViewModel {
 
     //Индекс символа текста, относительно которого стартует паттерн поиска. В алгоритмах это копия переменной i.
     var textIndex by mutableStateOf(0)
-        private set
+        protected set
     //Индекс последнего символа паттерна (тоже относительно текста).
     var lastIndex by mutableStateOf(0)
-        private set
+        protected set
     //Индекс сравниваемого символа относительно паттерна. Нужен для пометки сравниваемого символа в UI
     var compIndex by mutableStateOf<Int?>(null)
         protected set
@@ -110,6 +110,7 @@ abstract class AlgorithmViewModel {
         when(event) {
             is AppEvent.Init -> {
                 if(finished) onEvent(AppEvent.Reset())
+                message = ""
                 text = event.text
                 pattern = event.pattern
                 speed = event.speed.toLong()
@@ -143,6 +144,7 @@ abstract class AlgorithmViewModel {
                 job?.cancel()
                 job = null
                 initialized = false
+
                 textIndex = 0
                 lastIndex = textIndex + pattern.length - 1
                 finished = false

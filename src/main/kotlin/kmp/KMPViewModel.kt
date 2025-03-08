@@ -10,6 +10,7 @@ class KMPViewModel: AlgorithmViewModel() {
     var m = 0
     var i = 0
     var j = 0
+    var shift = 0
 
 
     override fun resetData() {
@@ -29,50 +30,64 @@ class KMPViewModel: AlgorithmViewModel() {
             }
             KMPState.COMPARING -> {
                 if(i < n) {
-                    numComparisons++
                     if (pattern[j] == text[i]) {
                         i++
                         j++
                         addLastMatched(1)
-                        if (j == m) {
-                            compIndex = null
-                            finished = true
-                            message = "Строка найдена, начало на индексе ${i-j}"
-                        } else {
-                            message = "Соответствие, проверка символа правее"
-                            compIndex = compIndex!! + 1
-                        }
+                        message = "Соответствие"
+                        state = KMPState.MATCH
                     } else {
                         clearMatch()
-                        if (j != 0) {
-                            val shift = j - lps[j - 1]
-                            message = "Несоответствие. Сдвиг подстроки на $shift"
-                            shiftPattern(shift)
-                            addLastMatched(lps[j - 1])
-                            j = lps[j - 1]
-                            compIndex = j
-                        } else {
-                            message = "Несоответствие. Сдвиг подстроки на 1"
-                            i++
-                            shiftPattern(1)
-                        }
+                        message = "Несоответствие"
+                        state = KMPState.MISMATCH
                     }
-                } else {
-                    compIndex = null
-                    finished = true
-                    message = "Строка не найдена"
-                }
+                    numComparisons++
+                } else finishNotFound()
             }
             KMPState.MATCH -> {
-
+                if (j == m) {
+                    compIndex = null
+                    finished = true
+                    message = "Строка найдена, начало на индексе ${i-j}"
+                } else {
+                    message = "Проверка символа правее"
+                    compIndex = compIndex!! + 1
+                    state = KMPState.COMPARING
+                }
             }
             KMPState.MISMATCH -> {
-
+                if (j != 0) {
+                    shift = j - lps[j - 1]
+                    if(lastIndex + shift >= n) {
+                        finishNotFound()
+                        return
+                    }
+                    message = "Сдвиг подстроки на $shift"
+                    shiftPattern(shift)
+                    addLastMatched(lps[j - 1])
+                    j = lps[j - 1]
+                    compIndex = j
+                } else {
+                    if(lastIndex + 1 >= n) {
+                        finishNotFound()
+                        return
+                    }
+                    message = "Сдвиг подстроки на 1"
+                    i++
+                    shiftPattern(1)
+                }
+                state = KMPState.COMPARING
             }
         }
     }
 
     override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.KMP
+
+    private fun finishNotFound() {
+        compIndex = null
+        finished = true
+        message = "Строка не найдена"
+    }
 
     private fun computeLPSArray() {
         val m = pattern.length
