@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 abstract class AlgorithmViewModel {
+    private var activated = false
+
     var initialized by mutableStateOf(false)
         private set
 
@@ -49,14 +51,19 @@ abstract class AlgorithmViewModel {
     private var job: Job? = null
 
     init {
+        ActivationBus.bus.onEach { algo ->
+            activated = identify(algo)
+        }.launchIn(scope)
+
         AppEventBus.bus.onEach { event ->
-            onEvent(event)
+            if(activated) onEvent(event)
         }.launchIn(scope)
     }
 
     //Функция перехода в следующее состояние вьюмодели. Автомат определяется в наследнике.
     protected abstract fun nextStep()
     protected abstract fun resetData()
+    protected abstract fun identify(algorithm: Algorithm): Boolean
 
 
     //Группа функций для управления отображением сравненных символов в UI
@@ -102,6 +109,7 @@ abstract class AlgorithmViewModel {
     private fun onEvent(event: AppEvent) {
         when(event) {
             is AppEvent.Init -> {
+                if(finished) onEvent(AppEvent.Reset())
                 text = event.text
                 pattern = event.pattern
                 speed = event.speed.toLong()
@@ -131,12 +139,13 @@ abstract class AlgorithmViewModel {
                 if(!initialized) return
                 job?.cancel()
                 job = null
+                initialized = false
                 textIndex = 0
                 lastIndex = textIndex + pattern.length - 1
                 finished = false
                 clearMatch()
+                numComparisons = 0
                 compIndex = null
-                initialized = false
                 resetData()
             }
             is AppEvent.SkipToFinish -> {

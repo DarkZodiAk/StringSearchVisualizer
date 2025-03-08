@@ -3,6 +3,7 @@ package rabin_karp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import util.Algorithm
 import util.AlgorithmViewModel
 
 class RKViewModel: AlgorithmViewModel() {
@@ -96,4 +97,6 @@ class RKViewModel: AlgorithmViewModel() {
             }
         }
     }
+
+    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.RABIN_KARP
 }

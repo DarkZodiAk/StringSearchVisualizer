@@ -12,15 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import boyermoore.BMViewModel
-import bruteforce.BFViewModel
 import components.AlgorithmBlock
 import components.AppTextField
 import components.TextMedium
-import kmp.KMPViewModel
 import kotlinx.coroutines.launch
-import rabin_karp.RKViewModel
 import util.Algorithm
+import util.ViewModels
 import java.awt.Dimension
 
 @Composable
@@ -28,15 +25,6 @@ import java.awt.Dimension
 fun App(
     viewModel: MainViewModel
 ) {
-    val currentAlgorithmViewModel = remember(viewModel.algorithm) {
-        when (viewModel.algorithm) {
-            Algorithm.BRUTE_FORCE -> BFViewModel()
-            Algorithm.RABIN_KARP -> RKViewModel()
-            Algorithm.KMP -> KMPViewModel()
-            Algorithm.BOYER_MOORE -> BMViewModel()
-        }
-    }
-
     Row {
         Column(
             modifier = Modifier
@@ -114,21 +102,20 @@ fun App(
             Spacer(Modifier.height(16.dp))
 
             //Экран самого алгоритма
-            AlgorithmBlock(currentAlgorithmViewModel)
-            /*when(viewModel.algorithm) {
+            when(viewModel.algorithm) {
                 Algorithm.BRUTE_FORCE -> {
-                    AlgorithmBlock(BFViewModel())
+                    AlgorithmBlock(ViewModels.bfViewModel)
                 }
                 Algorithm.RABIN_KARP -> {
-                    AlgorithmBlock(RKViewModel())
+                    AlgorithmBlock(ViewModels.rkViewModel)
                 }
                 Algorithm.KMP -> {
-                    AlgorithmBlock(KMPViewModel())
+                    AlgorithmBlock(ViewModels.kmpViewModel)
                 }
                 Algorithm.BOYER_MOORE -> {
-                    AlgorithmBlock(BMViewModel())
+                    AlgorithmBlock(ViewModels.bmViewModel)
                 }
-            }*/
+            }
         }
     }
 }

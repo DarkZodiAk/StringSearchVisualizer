@@ -1,5 +1,6 @@
 package bruteforce
 
+import util.Algorithm
 import util.AlgorithmViewModel
 
 class BFViewModel: AlgorithmViewModel() {
@@ -63,4 +64,6 @@ class BFViewModel: AlgorithmViewModel() {
             }
         }
     }
+
+    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.BRUTE_FORCE
 }

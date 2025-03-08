@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import util.ActivationBus
 import util.Algorithm
 import util.AppEvent
 import util.AppEventBus
@@ -18,7 +19,7 @@ class MainViewModel {
         private set
     var pattern by mutableStateOf("")
         private set
-    var algorithm by mutableStateOf(Algorithm.BRUTE_FORCE)
+    var algorithm by mutableStateOf(Algorithm.DEFAULT)
         private set
 
     var speed by mutableFloatStateOf(100f)
@@ -33,6 +34,7 @@ class MainViewModel {
     val error = _error.receiveAsFlow()
 
     init {
+        scope.launch { ActivationBus.activate(Algorithm.DEFAULT) }
         AppEventBus.bus.onEach { event ->
             if(event is AppEvent.Finish) {
                 isPlaying = false
@@ -45,7 +47,10 @@ class MainViewModel {
         when(action) {
             is MainAction.ModifyPattern -> { pattern = action.newPattern }
             is MainAction.ModifyText -> { text = action.newText }
-            is MainAction.SwitchAlgorithm -> { algorithm = action.algorithm }
+            is MainAction.SwitchAlgorithm -> {
+                algorithm = action.algorithm
+                scope.launch { ActivationBus.activate(algorithm) }
+            }
             is MainAction.ExecuteSearch -> {
                 if(text.isEmpty()) {
                     scope.launch { _error.send("Ошибка: Текст пустой") }

@@ -1,5 +1,6 @@
 package kmp
 
+import util.Algorithm
 import util.AlgorithmViewModel
 
 class KMPViewModel: AlgorithmViewModel() {
@@ -70,6 +71,8 @@ class KMPViewModel: AlgorithmViewModel() {
             }
         }
     }
+
+    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.KMP
 
     private fun computeLPSArray() {
         val m = pattern.length

@@ -1,5 +1,6 @@
 package boyermoore
 
+import util.Algorithm
 import util.AlgorithmViewModel
 
 class BMViewModel: AlgorithmViewModel() {
@@ -65,4 +66,6 @@ class BMViewModel: AlgorithmViewModel() {
             }
         }
     }
+
+    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.BOYER_MOORE
 }
