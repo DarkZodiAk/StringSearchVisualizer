@@ -136,7 +136,10 @@ abstract class AlgorithmViewModel {
                 }
             }
             is AppEvent.Reset -> {
-                if(!initialized) return
+                if(!initialized) {
+                    scope.launch { AppEventBus.sendEvent(AppEvent.AlreadyResetted()) }
+                    return
+                }
                 job?.cancel()
                 job = null
                 initialized = false

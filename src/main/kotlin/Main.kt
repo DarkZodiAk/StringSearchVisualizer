@@ -97,6 +97,12 @@ fun App(
                     valueRange = 100f..2000f,
                     modifier = Modifier.width(200.dp)
                 )
+                Button(
+                    onClick = { viewModel.onAction(MainAction.Reset()) },
+                    enabled = !viewModel.isPlaying
+                ) {
+                    Text("Сброс")
+                }
             }
 
             Spacer(Modifier.height(16.dp))

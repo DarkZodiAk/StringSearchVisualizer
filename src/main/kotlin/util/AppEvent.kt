@@ -9,4 +9,5 @@ sealed interface AppEvent {
     class StepForward: AppEvent
     class SkipToFinish: AppEvent
     class Finish: AppEvent
+    class AlreadyResetted: AppEvent
 }

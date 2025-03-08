@@ -36,9 +36,17 @@ class MainViewModel {
     init {
         scope.launch { ActivationBus.activate(Algorithm.DEFAULT) }
         AppEventBus.bus.onEach { event ->
-            if(event is AppEvent.Finish) {
-                isPlaying = false
-                isSearchWorking = false
+            when(event) {
+                is AppEvent.Finish -> {
+                    isPlaying = false
+                    isSearchWorking = false
+                }
+                is AppEvent.AlreadyResetted -> {
+                    scope.launch {
+                        _error.send("Предупреждение: Алгоритм уже сброшен")
+                    }
+                }
+                else -> Unit
             }
         }.launchIn(scope)
     }
@@ -89,16 +97,9 @@ class MainViewModel {
                 scope.launch { AppEventBus.sendEvent(AppEvent.StepForward()) }
             }
             is MainAction.Reset -> {
-
+                isSearchWorking = false
+                scope.launch { AppEventBus.sendEvent(AppEvent.Reset()) }
             }
         }
-    }
-
-    private fun stepForward() {
-
-    }
-
-    private fun skipToFinish() {
-
     }
 }
