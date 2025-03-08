@@ -15,8 +15,6 @@ class BFViewModel: AlgorithmViewModel() {
         state = BFState.START
         i = 0
         j = 0
-        m = 0
-        n = 0
     }
 
     override fun nextStep() {

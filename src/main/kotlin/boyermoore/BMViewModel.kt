@@ -42,27 +42,40 @@ class BMViewModel: AlgorithmViewModel() {
             }
             BMState.COMPARING -> {
                 if(j >= 0 && pattern[j] == text[s + j]) {
-                    numComparisons++
                     addFirstMatched(1)
                     j--
-                    if(j < 0) {
-                        compIndex = null
-                        finished = true
-                        message = "Строка найдена, начало на индексе $s"
-                    } else {
-                        message = "Соответствие, проверка символа левее"
-                        compIndex = compIndex!! - 1
-                    }
+                    message = "Соответствие"
+                    state = BMState.MATCH
                 } else {
                     clearMatch()
-                    numComparisons++
-                    lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
-                    val shift = maxOf(1, j - lastOccur)
-                    message = "Несоответствие, сдвиг подстроки на $shift"
-                    s += shift
-                    shiftPattern(shift)
-                    state = BMState.SET_INDEX
+                    message = "Несоответствие"
+                    state = BMState.MISMATCH
                 }
+                numComparisons++
+            }
+            BMState.MATCH -> {
+                if(j < 0) {
+                    compIndex = null
+                    finished = true
+                    message = "Строка найдена, начало на индексе $s"
+                } else {
+                    message = "Проверка символа левее"
+                    compIndex = compIndex!! - 1
+                }
+            }
+            BMState.MISMATCH -> {
+                lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
+                val shift = maxOf(1, j - lastOccur)
+                if(lastIndex + shift >= n) {
+                    compIndex = null
+                    finished = true
+                    message = "Строка не найдена"
+                    return
+                }
+                message = "Сдвиг подстроки на $shift вправо"
+                s += shift
+                shiftPattern(shift)
+                state = BMState.SET_INDEX
             }
         }
     }

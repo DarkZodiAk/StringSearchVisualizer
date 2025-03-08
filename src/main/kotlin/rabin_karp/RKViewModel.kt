@@ -21,8 +21,6 @@ class RKViewModel: AlgorithmViewModel() {
 
     override fun resetData() {
         state = RKState.START
-        n = 0
-        m = 0
         h = 1
         patternHash = 0
         textHash = 0

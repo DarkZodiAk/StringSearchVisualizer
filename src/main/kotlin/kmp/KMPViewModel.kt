@@ -10,7 +10,6 @@ class KMPViewModel: AlgorithmViewModel() {
     var m = 0
     var i = 0
     var j = 0
-    var shift = 0
 
 
     override fun resetData() {
@@ -57,12 +56,12 @@ class KMPViewModel: AlgorithmViewModel() {
             }
             KMPState.MISMATCH -> {
                 if (j != 0) {
-                    shift = j - lps[j - 1]
+                    val shift = j - lps[j - 1]
                     if(lastIndex + shift >= n) {
                         finishNotFound()
                         return
                     }
-                    message = "Сдвиг подстроки на $shift"
+                    message = "Сдвиг подстроки на $shift вправо"
                     shiftPattern(shift)
                     addLastMatched(lps[j - 1])
                     j = lps[j - 1]
@@ -72,7 +71,7 @@ class KMPViewModel: AlgorithmViewModel() {
                         finishNotFound()
                         return
                     }
-                    message = "Сдвиг подстроки на 1"
+                    message = "Сдвиг подстроки на 1 вправо"
                     i++
                     shiftPattern(1)
                 }
