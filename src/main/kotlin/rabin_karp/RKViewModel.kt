@@ -56,19 +56,18 @@ class RKViewModel: AlgorithmViewModel() {
             RKState.COMP_PATTERN -> {
                 compIndex = compIndex ?: 0
                 if(j < m && text[i + j] == pattern[j]) {
-                    numComparisons++
                     addLastMatched(1)
                     message = "Соответствие"
                     state = RKState.MATCH
                 } else {
-                    numComparisons++
                     state = RKState.MISMATCH
                     message = "Несоответствие"
                 }
+                numComparisons++
             }
             RKState.MATCH -> {
                 j++
-                if(j >= m) {
+                if(j == m) {
                     finished = true
                     compIndex = null
                     message = "Строка найдена, начало на индексе $i"
@@ -92,7 +91,6 @@ class RKViewModel: AlgorithmViewModel() {
 
                     state = RKState.COMP_HASH
                 } else {
-                    compIndex = null
                     finished = true
                     message = "Строка не найдена"
                 }

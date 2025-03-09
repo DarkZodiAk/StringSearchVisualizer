@@ -27,33 +27,36 @@ class BFViewModel: AlgorithmViewModel() {
             }
             BFState.COMPARING -> {
                 if(j < m && text[i + j] == pattern[j]) {
-                    numComparisons++
+                    addLastMatched(1)
+                    message = "Соответствие"
                     state = BFState.MATCH
-                    message = "Соответствие, проверка символа правее"
-                } else if(j == m) {
-                    compIndex = null
-                    finished = true
-                    message = "Строка найдена, начало на индексе $i"
                 } else {
-                    numComparisons++
+                    message = "Несоответствие"
                     state = BFState.MISMATCH
-                    message = "Несоответствие. Сдвиг строки на 1 символ вправо"
                 }
+                numComparisons++
             }
             BFState.MATCH -> {
                 j++
-                addLastMatched(1)
-                state = BFState.COMPARING
+                if(j == m) {
+                    finished = true
+                    compIndex = null
+                    message = "Строка найдена, начало на индексе $i"
+                    return
+                }
+                message = "Проверка символа правее"
                 compIndex = compIndex!! + 1
+                state = BFState.COMPARING
             }
             BFState.MISMATCH -> {
                 clearMatch()
                 i++
                 j = 0
                 if(i <= n - m) {
+                    message = "Сдвиг строки на 1 символ вправо"
                     shiftPattern(1)
-                    state = BFState.COMPARING
                     compIndex = 0
+                    state = BFState.COMPARING
                 } else {
                     compIndex = null
                     finished = true
