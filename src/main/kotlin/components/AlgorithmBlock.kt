@@ -2,6 +2,7 @@ package components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -14,12 +15,19 @@ import androidx.compose.ui.unit.dp
 import util.AlgorithmViewModel
 
 @Composable
-fun AlgorithmBlock(vm: AlgorithmViewModel) {
+fun AlgorithmBlock(
+    vm: AlgorithmViewModel,
+    modifier: Modifier = Modifier,
+    additionalContent: (@Composable (() -> Unit))? = null,
+) {
     if(vm.initialized)
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.padding(start = 8.dp, end = 4.dp)
+        modifier = modifier.fillMaxSize().padding(start = 8.dp, end = 4.dp)
     ) {
+        additionalContent?.let {
+            additionalContent()
+        }
         Text("Количество сравнений: ${vm.numComparisons}")
         Text(vm.message)
         LazyVerticalGrid(

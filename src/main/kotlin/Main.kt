@@ -14,10 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import boyermoore.BMScreen
 import components.AlgorithmBlock
 import components.AppTextField
 import components.TextMedium
+import kmp.KMPScreen
 import kotlinx.coroutines.launch
+import rabin_karp.RKScreen
 import util.Algorithm
 import util.ViewModels
 import java.awt.Dimension
@@ -116,13 +119,13 @@ fun App(
                         AlgorithmBlock(ViewModels.bfViewModel)
                     }
                     Algorithm.RABIN_KARP -> {
-                        AlgorithmBlock(ViewModels.rkViewModel)
+                        RKScreen(ViewModels.rkViewModel)
                     }
                     Algorithm.KMP -> {
-                        AlgorithmBlock(ViewModels.kmpViewModel)
+                        KMPScreen(ViewModels.kmpViewModel)
                     }
                     Algorithm.BOYER_MOORE -> {
-                        AlgorithmBlock(ViewModels.bmViewModel)
+                        BMScreen(ViewModels.bmViewModel)
                     }
                 }
             }
@@ -165,7 +168,7 @@ fun main() = application {
     val viewModel = MainViewModel()
     Window(onCloseRequest = ::exitApplication) {
         LaunchedEffect(Unit) {
-            window.minimumSize = Dimension(780, 450)
+            window.minimumSize = Dimension(780, 580)
             window.title = "String Search Visualizer"
         }
 

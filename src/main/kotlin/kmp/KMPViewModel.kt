@@ -1,11 +1,13 @@
 package kmp
 
+import androidx.compose.runtime.mutableStateListOf
 import util.Algorithm
 import util.AlgorithmViewModel
 
 class KMPViewModel: AlgorithmViewModel() {
     private var state = KMPState.START
     private var lps = IntArray(0)
+    val lpsList = mutableStateListOf<Int>()
     var n = 0
     var m = 0
     var i = 0
@@ -90,6 +92,7 @@ class KMPViewModel: AlgorithmViewModel() {
 
     private fun computeLPSArray() {
         val m = pattern.length
+        lpsList.clear()
         lps = IntArray(m)
         var length = 0
         var i = 1
@@ -109,5 +112,6 @@ class KMPViewModel: AlgorithmViewModel() {
                 }
             }
         }
+        lpsList.addAll(lps.toList())
     }
 }

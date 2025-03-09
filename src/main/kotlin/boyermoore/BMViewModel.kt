@@ -1,11 +1,12 @@
 package boyermoore
 
+import androidx.compose.runtime.mutableStateMapOf
 import util.Algorithm
 import util.AlgorithmViewModel
 
 class BMViewModel: AlgorithmViewModel() {
     private var state = BMState.START
-    val lastOccurrence = mutableMapOf<Char, Int>()
+    val lastOccurrence = mutableStateMapOf<Char, Int>()
     var lastOccur = 0
     var n = 0
     var m = 0

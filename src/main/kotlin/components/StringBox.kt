@@ -21,19 +21,19 @@ fun StringBox(
     Column(
         modifier = Modifier.height(76.dp)
     ) {
-        CharBox(textChar, outlined, false)
+        CharBox(textChar.toString(), outlined)
         patternChar?.let {
             Spacer(modifier = Modifier.height(12.dp))
-            CharBox(patternChar, outlined, matched)
+            CharBox(patternChar.toString(), outlined, matched)
         }
     }
 }
 
 @Composable
 fun CharBox(
-    char: Char,
-    outlined: Boolean,
-    matched: Boolean
+    str: String,
+    outlined: Boolean = false,
+    matched: Boolean = false
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -45,7 +45,7 @@ fun CharBox(
             ).background(if(matched) Color.Green else Color.Unspecified)
     ) {
         Text(
-            text = char.toString(),
+            text = str,
             fontSize = 16.sp
         )
     }
