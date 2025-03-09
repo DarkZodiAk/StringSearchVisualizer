@@ -61,6 +61,7 @@ class BMViewModel: AlgorithmViewModel() {
                 } else {
                     message = "Проверка символа левее"
                     compIndex = compIndex!! - 1
+                    state = BMState.COMPARING
                 }
             }
             BMState.MISMATCH -> {

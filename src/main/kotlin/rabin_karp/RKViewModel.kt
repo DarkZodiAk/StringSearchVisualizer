@@ -50,28 +50,31 @@ class RKViewModel: AlgorithmViewModel() {
                     message = "Соответствие хеш-сумм. Сравнение строк"
                 } else {
                     state = RKState.MISMATCH
-                    message = "Несоответствие. Сдвиг строки на 1 символ вправо. Пересчет хеш-суммы"
+                    message = "Несоответствие хеш-сумм"
                 }
             }
             RKState.COMP_PATTERN -> {
                 compIndex = compIndex ?: 0
                 if(j < m && text[i + j] == pattern[j]) {
                     numComparisons++
+                    addLastMatched(1)
+                    message = "Соответствие"
                     state = RKState.MATCH
-                    message = "Соответствие, проверка символа правее"
-                } else if(j == m) {
-                    finished = true
-                    compIndex = null
-                    message = "Строка найдена, начало на индексе $i"
                 } else {
                     numComparisons++
                     state = RKState.MISMATCH
-                    message = "Несоответствие. Сдвиг строки на 1 символ вправо"
+                    message = "Несоответствие"
                 }
             }
             RKState.MATCH -> {
                 j++
-                addLastMatched(1)
+                if(j >= m) {
+                    finished = true
+                    compIndex = null
+                    message = "Строка найдена, начало на индексе $i"
+                    return
+                }
+                message = "Проверка символа правее"
                 state = RKState.COMP_PATTERN
                 compIndex = compIndex!! + 1
             }
@@ -81,6 +84,7 @@ class RKViewModel: AlgorithmViewModel() {
                 i++
                 j = 0
                 if(i <= n - m) {
+                    message = "Сдвиг строки на 1 символ вправо"
                     shiftPattern(1)
                     //Пересчет хеш-суммы
                     textHash = (textHash - text[i-1].code.toLong() * h % prime + prime) % prime
