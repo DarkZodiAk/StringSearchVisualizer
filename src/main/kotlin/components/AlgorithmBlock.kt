@@ -16,7 +16,10 @@ import util.AlgorithmViewModel
 @Composable
 fun AlgorithmBlock(vm: AlgorithmViewModel) {
     if(vm.initialized)
-    Column(modifier = Modifier.padding(horizontal = 4.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.padding(start = 8.dp, end = 4.dp)
+    ) {
         Text("Количество сравнений: ${vm.numComparisons}")
         Text(vm.message)
         LazyVerticalGrid(

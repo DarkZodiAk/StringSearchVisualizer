@@ -1,6 +1,8 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
@@ -29,19 +31,28 @@ fun App(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .widthIn(min = 200.dp, max = 300.dp)
+                .verticalScroll(rememberScrollState())
+                .width(300.dp)
                 .border(width = 1.dp, color = Color.Gray)
                 .padding(12.dp)
         ) {
             TextMedium("Текст")
             Spacer(Modifier.height(8.dp))
-            AppTextField(viewModel.text) { viewModel.onAction(MainAction.ModifyText(it)) }
+            AppTextField(
+                value = viewModel.text,
+                onValueChange = { viewModel.onAction(MainAction.ModifyText(it)) },
+                modifier = Modifier.heightIn(max = 256.dp).height(IntrinsicSize.Min)
+            )
 
             Spacer(Modifier.height(16.dp))
 
             TextMedium("Что искать?")
             Spacer(Modifier.height(8.dp))
-            AppTextField(viewModel.pattern) { viewModel.onAction(MainAction.ModifyPattern(it)) }
+            AppTextField(
+                value = viewModel.pattern,
+                onValueChange = { viewModel.onAction(MainAction.ModifyPattern(it)) },
+                modifier = Modifier.heightIn(max = 256.dp).height(IntrinsicSize.Min)
+            )
 
             Spacer(Modifier.height(16.dp))
 
@@ -64,9 +75,9 @@ fun App(
 
         Column(
             modifier = Modifier.fillMaxHeight()
-            .fillMaxWidth(1f)
-            .border(1.dp, Color.Black))
-        {
+                .fillMaxWidth(1f)
+                .border(1.dp, Color.Black)
+        ) {
             // Панель управления процессом
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -90,13 +101,6 @@ fun App(
                         contentDescription = null
                     )
                 }
-                Slider(
-                    value = viewModel.speed,
-                    onValueChange = { viewModel.onAction(MainAction.ModifySpeed(it)) },
-                    steps = 50,
-                    valueRange = 100f..2000f,
-                    modifier = Modifier.width(200.dp)
-                )
                 Button(
                     onClick = { viewModel.onAction(MainAction.Reset()) },
                     enabled = !viewModel.isPlaying
@@ -105,21 +109,52 @@ fun App(
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
-
             //Экран самого алгоритма
-            when(viewModel.algorithm) {
-                Algorithm.BRUTE_FORCE -> {
-                    AlgorithmBlock(ViewModels.bfViewModel)
+            Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                when(viewModel.algorithm) {
+                    Algorithm.BRUTE_FORCE -> {
+                        AlgorithmBlock(ViewModels.bfViewModel)
+                    }
+                    Algorithm.RABIN_KARP -> {
+                        AlgorithmBlock(ViewModels.rkViewModel)
+                    }
+                    Algorithm.KMP -> {
+                        AlgorithmBlock(ViewModels.kmpViewModel)
+                    }
+                    Algorithm.BOYER_MOORE -> {
+                        AlgorithmBlock(ViewModels.bmViewModel)
+                    }
                 }
-                Algorithm.RABIN_KARP -> {
-                    AlgorithmBlock(ViewModels.rkViewModel)
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Slider(
+                        value = viewModel.speed,
+                        onValueChange = { viewModel.onAction(MainAction.ModifySpeed(it)) },
+                        steps = 50,
+                        valueRange = 50f..2000f,
+                        modifier = Modifier.width(200.dp)
+                    )
+                    Text(
+                        text = "Скорость анимации",
+                        modifier = Modifier.offset(y = (-8).dp)
+                    )
                 }
-                Algorithm.KMP -> {
-                    AlgorithmBlock(ViewModels.kmpViewModel)
+                Button(
+                    onClick = { viewModel.onAction(MainAction.StepForward()) },
+                    enabled = viewModel.isSearchWorking && !viewModel.isPlaying
+                ) {
+                    Text("Шаг вперед")
                 }
-                Algorithm.BOYER_MOORE -> {
-                    AlgorithmBlock(ViewModels.bmViewModel)
+                Button(
+                    onClick = { viewModel.onAction(MainAction.SkipToFinish()) },
+                    enabled = viewModel.isSearchWorking && !viewModel.isPlaying
+                ) {
+                    Text("В конец")
                 }
             }
         }
@@ -130,7 +165,7 @@ fun main() = application {
     val viewModel = MainViewModel()
     Window(onCloseRequest = ::exitApplication) {
         LaunchedEffect(Unit) {
-            window.minimumSize = Dimension(800, 450)
+            window.minimumSize = Dimension(780, 450)
             window.title = "String Search Visualizer"
         }
 

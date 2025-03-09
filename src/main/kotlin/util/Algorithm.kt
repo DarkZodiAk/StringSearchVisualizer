@@ -6,6 +6,6 @@ enum class Algorithm(val text: String) {
     BOYER_MOORE("Алгоритм Бойер-Мура");
 
     companion object {
-        val DEFAULT = Algorithm.BRUTE_FORCE
+        val DEFAULT = BRUTE_FORCE
     }
 }

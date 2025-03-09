@@ -22,7 +22,7 @@ class MainViewModel {
     var algorithm by mutableStateOf(Algorithm.DEFAULT)
         private set
 
-    var speed by mutableFloatStateOf(100f)
+    var speed by mutableFloatStateOf(1700f)
         private set
     var isPlaying by mutableStateOf(false)
         private set
@@ -75,11 +75,11 @@ class MainViewModel {
 
                 isSearchWorking = true
                 isPlaying = true
-                scope.launch { AppEventBus.sendEvent(AppEvent.Init(text, pattern, speed)) }
+                scope.launch { AppEventBus.sendEvent(AppEvent.Init(text, pattern, 2050f - speed)) }
             }
             is MainAction.ModifySpeed -> {
                 speed = action.speed
-                scope.launch { AppEventBus.sendEvent(AppEvent.ModifySpeed(action.speed)) }
+                scope.launch { AppEventBus.sendEvent(AppEvent.ModifySpeed(2050f - action.speed)) }
             }
             is MainAction.Pause -> {
                 isPlaying = false
