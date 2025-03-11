@@ -1,6 +1,9 @@
 package kmp
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import util.Algorithm
 import util.AlgorithmViewModel
 
@@ -8,10 +11,11 @@ class KMPViewModel: AlgorithmViewModel() {
     private var state = KMPState.START
     private var lps = IntArray(0)
     val lpsList = mutableStateListOf<Int>()
-    var n = 0
-    var m = 0
-    var i = 0
-    var j = 0
+    var idxInLps by mutableStateOf<Int?>(null)
+    private var n = 0
+    private var m = 0
+    private var i = 0
+    private var j = 0
 
 
     override fun resetData() {
@@ -30,6 +34,7 @@ class KMPViewModel: AlgorithmViewModel() {
                 compIndex = 0
             }
             KMPState.COMPARING -> {
+                idxInLps = null
                 if(i < n) {
                     if (pattern[j] == text[i]) {
                         i++
@@ -38,6 +43,7 @@ class KMPViewModel: AlgorithmViewModel() {
                         message = "Соответствие"
                         state = KMPState.MATCH
                     } else {
+                        idxInLps = j - 1
                         clearMatch()
                         message = "Несоответствие"
                         state = KMPState.MISMATCH
@@ -63,7 +69,7 @@ class KMPViewModel: AlgorithmViewModel() {
                         finishNotFound()
                         return
                     }
-                    message = "Сдвиг подстроки на $shift вправо"
+                    message = "Сдвиг подстроки на $j-${lps[j-1]} = $shift вправо"
                     shiftPattern(shift)
                     addLastMatched(lps[j - 1])
                     j = lps[j - 1]

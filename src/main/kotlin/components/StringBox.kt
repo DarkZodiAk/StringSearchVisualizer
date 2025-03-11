@@ -21,10 +21,10 @@ fun StringBox(
     Column(
         modifier = Modifier.height(76.dp)
     ) {
-        CharBox(textChar.toString(), outlined)
+        CharBox(textChar.toString(), outlined, matched)
         patternChar?.let {
             Spacer(modifier = Modifier.height(12.dp))
-            CharBox(patternChar.toString(), outlined, matched)
+            CharBox(patternChar.toString(), outlined)
         }
     }
 }

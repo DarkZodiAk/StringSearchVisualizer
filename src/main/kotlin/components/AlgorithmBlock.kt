@@ -40,7 +40,8 @@ fun AlgorithmBlock(
                     textChar = ch,
                     patternChar = if(idx >= vm.textIndex && idx <= vm.lastIndex) vm.pattern[idx - vm.textIndex] else null,
                     outlined = vm.compIndex != null && vm.textIndex + vm.compIndex!! == idx,
-                    matched = idx - vm.textIndex >= vm.matchedFirst && idx - vm.textIndex <= vm.matchedLast
+                    matched = vm.matchedFirst != null && vm.matchedLast != null &&
+                            idx - vm.textIndex >= vm.matchedFirst!! && idx - vm.textIndex <= vm.matchedLast!!
                 )
             }
         }

@@ -23,7 +23,7 @@ import components.CharBox
 @Composable
 fun BMScreen(vm: BMViewModel) {
     AlgorithmBlock(vm) {
-        var heuristicsVisible by remember { mutableStateOf(true) }
+        var heuristicsVisible by remember { mutableStateOf(false) }
         Column(modifier = Modifier.fillMaxWidth()) {
             Row {
                 Text(
@@ -39,7 +39,7 @@ fun BMScreen(vm: BMViewModel) {
                     items(vm.lastOccurrence.entries.toList()) {
                         Column {
                             CharBox(it.key.toString())
-                            CharBox(it.value.toString())
+                            CharBox(it.value.toString(), vm.charInLast != null && vm.charInLast == it.key)
                         }
                     }
                 }

@@ -32,10 +32,10 @@ abstract class AlgorithmViewModel {
     var compIndex by mutableStateOf<Int?>(null)
         protected set
     //Индекс первого (левого) символа среди сравненных относительно паттерна
-    var matchedFirst by mutableStateOf(-1)
+    var matchedFirst by mutableStateOf<Int?>(null)
         private set
     //Индекс последнего (правого) символа среди сравненных относительно паттерна
-    var matchedLast by mutableStateOf(-1)
+    var matchedLast by mutableStateOf<Int?>(null)
         private set
 
 
@@ -70,21 +70,21 @@ abstract class AlgorithmViewModel {
     protected fun addFirstMatched(offset: Int) {
         if(offset < 0 || offset > pattern.length)
             throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
-        if(matchedFirst == -1) {
+        if(matchedFirst == null) {
             matchedFirst = pattern.length - offset
             matchedLast = pattern.length - 1
         } else {
-            matchedFirst -= offset
+            matchedFirst = matchedFirst!! - offset
         }
     }
     protected fun addLastMatched(offset: Int) {
         if(offset < 0 || offset > pattern.length)
             throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
-        if(matchedFirst == -1) {
+        if(matchedFirst == null) {
             matchedFirst = 0
             matchedLast = offset - 1
         } else {
-            matchedLast += offset
+            matchedLast = matchedLast!! + offset
         }
     }
     protected fun matchAll() {
@@ -92,8 +92,8 @@ abstract class AlgorithmViewModel {
         matchedLast = pattern.length - 1
     }
     protected fun clearMatch() {
-        matchedFirst = -1
-        matchedLast = -1
+        matchedFirst = null
+        matchedLast = null
     }
 
     //Функция сдвига паттерна относительно текста

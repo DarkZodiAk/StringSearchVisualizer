@@ -23,7 +23,7 @@ import components.CharBox
 @Composable
 fun KMPScreen(vm: KMPViewModel) {
     AlgorithmBlock(vm) {
-        var lpsVisible by remember { mutableStateOf(true) }
+        var lpsVisible by remember { mutableStateOf(false) }
         Column(modifier = Modifier.fillMaxWidth()) {
             Row {
                 Text(
@@ -40,7 +40,7 @@ fun KMPScreen(vm: KMPViewModel) {
                         Column {
                             CharBox(idx.toString())
                             CharBox(vm.pattern[idx].toString())
-                            CharBox(prefix.toString())
+                            CharBox(prefix.toString(), vm.idxInLps != null && vm.idxInLps == idx)
                         }
                     }
                 }

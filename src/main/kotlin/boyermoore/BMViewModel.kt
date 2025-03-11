@@ -1,21 +1,28 @@
 package boyermoore
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import util.Algorithm
 import util.AlgorithmViewModel
 
 class BMViewModel: AlgorithmViewModel() {
     private var state = BMState.START
     val lastOccurrence = mutableStateMapOf<Char, Int>()
-    var lastOccur = 0
-    var n = 0
-    var m = 0
-    var j = 0
-    var s = 0
+    var charInLast by mutableStateOf<Char?>(null)
+    private var lastOccur = -1
+    private var n = 0
+    private var m = 0
+    private var j = 0
+    private var s = 0
 
 
     override fun resetData() {
         state = BMState.START
+        charInLast = null
+        lastOccurrence.clear()
+        lastOccur = 0
         j = 0
         s = 0
     }
@@ -31,6 +38,7 @@ class BMViewModel: AlgorithmViewModel() {
                 state = BMState.SET_INDEX
             }
             BMState.SET_INDEX -> {
+                charInLast = null
                 if(s <= n - m) {
                     j = m - 1
                     compIndex = m - 1
@@ -42,6 +50,7 @@ class BMViewModel: AlgorithmViewModel() {
                 }
             }
             BMState.COMPARING -> {
+                charInLast = null
                 if(j >= 0 && pattern[j] == text[s + j]) {
                     addFirstMatched(1)
                     j--
@@ -49,6 +58,8 @@ class BMViewModel: AlgorithmViewModel() {
                     state = BMState.MATCH
                 } else {
                     clearMatch()
+                    lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
+                    charInLast = if(lastOccur != -1) text[s + j] else null
                     message = "Несоответствие"
                     state = BMState.MISMATCH
                 }
@@ -66,7 +77,6 @@ class BMViewModel: AlgorithmViewModel() {
                 }
             }
             BMState.MISMATCH -> {
-                lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
                 val shift = maxOf(1, j - lastOccur)
                 if(lastIndex + shift >= n) {
                     compIndex = null
@@ -74,7 +84,7 @@ class BMViewModel: AlgorithmViewModel() {
                     message = "Строка не найдена"
                     return
                 }
-                message = "Сдвиг подстроки на $shift вправо"
+                message = "Сдвиг подстроки на max(1, $j-$lastOccur) = $shift вправо"
                 s += shift
                 shiftPattern(shift)
                 state = BMState.SET_INDEX
