@@ -31,10 +31,10 @@ abstract class AlgorithmViewModel {
     //Индекс сравниваемого символа относительно паттерна. Нужен для пометки сравниваемого символа в UI
     var compIndex by mutableStateOf<Int?>(null)
         protected set
-    //Индекс первого (левого) символа среди сравненных относительно паттерна
+    //Индекс первого (левого) символа среди сопоставленных относительно паттерна
     var matchedFirst by mutableStateOf<Int?>(null)
         private set
-    //Индекс последнего (правого) символа среди сравненных относительно паттерна
+    //Индекс последнего (правого) символа среди сопоставленных относительно паттерна
     var matchedLast by mutableStateOf<Int?>(null)
         private set
 
@@ -44,10 +44,10 @@ abstract class AlgorithmViewModel {
     var message by mutableStateOf("nothing")
         protected set
 
-    protected var speed = 100L
+    private var speed = 100L
     protected var finished = false
 
-    protected val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(Dispatchers.Default)
     private var job: Job? = null
 
     init {
@@ -60,13 +60,12 @@ abstract class AlgorithmViewModel {
         }.launchIn(scope)
     }
 
-    //Функция перехода в следующее состояние вьюмодели. Автомат определяется в наследнике.
     protected abstract fun nextStep()
     protected abstract fun resetData()
     protected abstract fun identify(algorithm: Algorithm): Boolean
 
 
-    //Группа функций для управления отображением сравненных символов в UI
+    //Группа функций для управления отображением сопоставленных символов в UI
     protected fun addFirstMatched(offset: Int) {
         if(offset < 0 || offset > pattern.length)
             throw IllegalArgumentException("Offset is out of range [0, ${pattern.length}]")
@@ -103,7 +102,6 @@ abstract class AlgorithmViewModel {
         textIndex += offset
         lastIndex += offset
     }
-
 
     //Функция реакции вьюмодели на определенное событие, отправленное из панели управления
     private fun onEvent(event: AppEvent) {

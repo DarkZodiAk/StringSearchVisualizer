@@ -98,5 +98,7 @@ class RKViewModel: AlgorithmViewModel() {
         }
     }
 
-    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.RABIN_KARP
+    override fun identify(algorithm: Algorithm): Boolean {
+        return algorithm == Algorithm.RABIN_KARP
+    }
 }

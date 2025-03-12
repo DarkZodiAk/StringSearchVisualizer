@@ -4,7 +4,6 @@ import util.Algorithm
 import util.AlgorithmViewModel
 
 class BFViewModel: AlgorithmViewModel() {
-
     private var state = BFState.START
     private var i = 0
     private var j = 0
@@ -66,5 +65,7 @@ class BFViewModel: AlgorithmViewModel() {
         }
     }
 
-    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.BRUTE_FORCE
+    override fun identify(algorithm: Algorithm): Boolean {
+        return algorithm == Algorithm.BRUTE_FORCE
+    }
 }

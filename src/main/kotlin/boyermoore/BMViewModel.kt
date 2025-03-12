@@ -92,5 +92,7 @@ class BMViewModel: AlgorithmViewModel() {
         }
     }
 
-    override fun identify(algorithm: Algorithm): Boolean = algorithm == Algorithm.BOYER_MOORE
+    override fun identify(algorithm: Algorithm): Boolean {
+        return algorithm == Algorithm.BOYER_MOORE
+    }
 }

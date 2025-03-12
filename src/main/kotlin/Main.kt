@@ -1,4 +1,3 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,22 +13,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import rabin_karp.RKScreen
 import boyermoore.BMScreen
+import kmp.KMPScreen
 import components.AlgorithmBlock
 import components.AppTextField
 import components.TextMedium
-import kmp.KMPScreen
 import kotlinx.coroutines.launch
-import rabin_karp.RKScreen
 import util.Algorithm
 import util.ViewModels
 import java.awt.Dimension
 
 @Composable
-@Preview
-fun App(
-    viewModel: MainViewModel
-) {
+fun App(viewModel: MainViewModel) {
     Row {
         Column(
             modifier = Modifier
@@ -49,7 +45,7 @@ fun App(
 
             Spacer(Modifier.height(16.dp))
 
-            TextMedium("Что искать?")
+            TextMedium("Искомая строка")
             Spacer(Modifier.height(8.dp))
             AppTextField(
                 value = viewModel.pattern,
@@ -112,7 +108,7 @@ fun App(
                 }
             }
 
-            //Экран самого алгоритма
+            //Экран алгоритма
             Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
                 when(viewModel.algorithm) {
                     Algorithm.BRUTE_FORCE -> {
@@ -169,7 +165,7 @@ fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         LaunchedEffect(Unit) {
             window.minimumSize = Dimension(780, 580)
-            window.title = "String Search Visualizer"
+            window.title = "Визуализация поиска строк"
         }
 
         val snackbarHostState = remember { SnackbarHostState() }

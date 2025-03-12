@@ -13,7 +13,7 @@ object AppEventBus {
 }
 
 object ActivationBus {
-    private val _bus = MutableStateFlow<Algorithm>(Algorithm.DEFAULT)
+    private val _bus = MutableStateFlow(Algorithm.DEFAULT)
     val bus = _bus.asStateFlow()
 
     suspend fun activate(algorithm: Algorithm) = _bus.emit(algorithm)
