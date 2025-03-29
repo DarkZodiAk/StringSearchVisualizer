@@ -41,7 +41,7 @@ abstract class AlgorithmViewModel {
 
     var numComparisons by mutableStateOf(0)
         protected set
-    var message by mutableStateOf("nothing")
+    var message by mutableStateOf("")
         protected set
 
     private var speed = 100L

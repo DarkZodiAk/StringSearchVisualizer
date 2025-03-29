@@ -25,22 +25,22 @@ class BFViewModel: AlgorithmViewModel() {
                 compIndex = 0
             }
             BFState.COMPARING -> {
-                if(j < m && text[i + j] == pattern[j]) {
+                if(text[i + j] == pattern[j]) {
+                    j++
                     addLastMatched(1)
-                    message = "Соответствие"
+                    message = "Соответствие символов"
                     state = BFState.MATCH
                 } else {
-                    message = "Несоответствие"
+                    message = "Несоответствие символов"
                     state = BFState.MISMATCH
                 }
                 numComparisons++
             }
             BFState.MATCH -> {
-                j++
                 if(j == m) {
                     finished = true
                     compIndex = null
-                    message = "Строка найдена, начало на индексе $i"
+                    message = "Образец найден, начало на индексе $i"
                     return
                 }
                 message = "Проверка символа правее"
@@ -52,14 +52,14 @@ class BFViewModel: AlgorithmViewModel() {
                 i++
                 j = 0
                 if(i <= n - m) {
-                    message = "Сдвиг строки на 1 символ вправо"
+                    message = "Сдвиг образца на 1 символ вправо"
                     shiftPattern(1)
                     compIndex = 0
                     state = BFState.COMPARING
                 } else {
                     compIndex = null
                     finished = true
-                    message = "Строка не найдена"
+                    message = "Образец не найден"
                 }
             }
         }

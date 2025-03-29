@@ -1,5 +1,5 @@
 package boyermoore
 
 enum class BMState {
-    START, SET_INDEX, COMPARING, MATCH, MISMATCH
+    START, COMPARING, MATCH, MISMATCH
 }

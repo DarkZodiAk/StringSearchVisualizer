@@ -15,7 +15,7 @@ class BMViewModel: AlgorithmViewModel() {
     private var n = 0
     private var m = 0
     private var j = 0
-    private var s = 0
+    private var i = 0
 
 
     override fun resetData() {
@@ -23,8 +23,7 @@ class BMViewModel: AlgorithmViewModel() {
         charInLast = null
         lastOccurrence.clear()
         lastOccur = 0
-        j = 0
-        s = 0
+        i = 0
     }
 
     override fun nextStep() {
@@ -32,35 +31,25 @@ class BMViewModel: AlgorithmViewModel() {
             BMState.START -> {
                 n = text.length
                 m = pattern.length
+                j = m - 1
+                compIndex = m - 1
                 for (k in 0 until m) {
                     lastOccurrence[pattern[k]] = k
                 }
-                state = BMState.SET_INDEX
-            }
-            BMState.SET_INDEX -> {
-                charInLast = null
-                if(s <= n - m) {
-                    j = m - 1
-                    compIndex = m - 1
-                    state = BMState.COMPARING
-                } else {
-                    compIndex = null
-                    finished = true
-                    message = "Строка не найдена"
-                }
+                state = BMState.COMPARING
             }
             BMState.COMPARING -> {
                 charInLast = null
-                if(j >= 0 && pattern[j] == text[s + j]) {
+                if(pattern[j] == text[i + j]) {
                     addFirstMatched(1)
                     j--
-                    message = "Соответствие"
+                    message = "Соответствие символов"
                     state = BMState.MATCH
                 } else {
                     clearMatch()
-                    lastOccur = lastOccurrence.getOrDefault(text[s + j], -1)
-                    charInLast = if(lastOccur != -1) text[s + j] else null
-                    message = "Несоответствие"
+                    lastOccur = lastOccurrence.getOrDefault(text[i + j], -1)
+                    charInLast = if(lastOccur != -1) text[i + j] else null
+                    message = "Несоответствие символов"
                     state = BMState.MISMATCH
                 }
                 numComparisons++
@@ -69,7 +58,7 @@ class BMViewModel: AlgorithmViewModel() {
                 if(j < 0) {
                     compIndex = null
                     finished = true
-                    message = "Строка найдена, начало на индексе $s"
+                    message = "Образец найден, начало на индексе $i"
                 } else {
                     message = "Проверка символа левее"
                     compIndex = compIndex!! - 1
@@ -81,13 +70,15 @@ class BMViewModel: AlgorithmViewModel() {
                 if(lastIndex + shift >= n) {
                     compIndex = null
                     finished = true
-                    message = "Строка не найдена"
+                    message = "Образец не найден"
                     return
                 }
-                message = "Сдвиг подстроки на max(1, $j-$lastOccur) = $shift вправо"
-                s += shift
+                message = "Сдвиг образца на max(1, $j-$lastOccur) = $shift вправо"
+                i += shift
                 shiftPattern(shift)
-                state = BMState.SET_INDEX
+                j = m - 1
+                compIndex = m - 1
+                state = BMState.COMPARING
             }
         }
     }

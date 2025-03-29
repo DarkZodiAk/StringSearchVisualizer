@@ -55,22 +55,22 @@ class RKViewModel: AlgorithmViewModel() {
             }
             RKState.COMP_PATTERN -> {
                 compIndex = compIndex ?: 0
-                if(j < m && text[i + j] == pattern[j]) {
+                if(text[i + j] == pattern[j]) {
+                    j++
                     addLastMatched(1)
-                    message = "Соответствие"
+                    message = "Соответствие символов"
                     state = RKState.MATCH
                 } else {
                     state = RKState.MISMATCH
-                    message = "Несоответствие"
+                    message = "Несоответствие символов"
                 }
                 numComparisons++
             }
             RKState.MATCH -> {
-                j++
                 if(j == m) {
                     finished = true
                     compIndex = null
-                    message = "Строка найдена, начало на индексе $i"
+                    message = "Образец найден, начало на индексе $i"
                     return
                 }
                 message = "Проверка символа правее"
@@ -83,16 +83,16 @@ class RKViewModel: AlgorithmViewModel() {
                 i++
                 j = 0
                 if(i <= n - m) {
-                    message = "Сдвиг строки на 1 символ вправо"
+                    message = "Сдвиг образца на 1 символ вправо"
                     shiftPattern(1)
-                    //Пересчет хеш-суммы
+
                     textHash = (textHash - text[i-1].code.toLong() * h % prime + prime) % prime
                     textHash = (textHash * base + text[i-1 + m].code.toLong()) % prime
 
                     state = RKState.COMP_HASH
                 } else {
                     finished = true
-                    message = "Строка не найдена"
+                    message = "Образец не найден"
                 }
             }
         }

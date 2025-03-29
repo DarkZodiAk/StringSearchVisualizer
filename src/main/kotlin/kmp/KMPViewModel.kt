@@ -40,12 +40,12 @@ class KMPViewModel: AlgorithmViewModel() {
                         i++
                         j++
                         addLastMatched(1)
-                        message = "Соответствие"
+                        message = "Соответствие символов"
                         state = KMPState.MATCH
                     } else {
                         idxInLps = j - 1
                         clearMatch()
-                        message = "Несоответствие"
+                        message = "Несоответствие символов"
                         state = KMPState.MISMATCH
                     }
                     numComparisons++
@@ -55,7 +55,7 @@ class KMPViewModel: AlgorithmViewModel() {
                 if (j == m) {
                     compIndex = null
                     finished = true
-                    message = "Строка найдена, начало на индексе ${i-j}"
+                    message = "Образец найден, начало на индексе ${i-j}"
                 } else {
                     message = "Проверка символа правее"
                     compIndex = compIndex!! + 1
@@ -69,7 +69,7 @@ class KMPViewModel: AlgorithmViewModel() {
                         finishNotFound()
                         return
                     }
-                    message = "Сдвиг подстроки на $j-${lps[j-1]} = $shift вправо"
+                    message = "Сдвиг образца на $j-${lps[j-1]} = $shift вправо"
                     shiftPattern(shift)
                     addLastMatched(lps[j - 1])
                     j = lps[j - 1]
@@ -79,7 +79,7 @@ class KMPViewModel: AlgorithmViewModel() {
                         finishNotFound()
                         return
                     }
-                    message = "Сдвиг подстроки на 1 вправо"
+                    message = "Сдвиг образца на 1 вправо"
                     i++
                     shiftPattern(1)
                 }
@@ -93,7 +93,7 @@ class KMPViewModel: AlgorithmViewModel() {
     private fun finishNotFound() {
         compIndex = null
         finished = true
-        message = "Строка не найдена"
+        message = "Образец не найден"
     }
 
     private fun computeLPSArray() {
