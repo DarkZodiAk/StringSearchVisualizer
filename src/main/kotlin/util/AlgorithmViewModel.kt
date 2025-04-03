@@ -22,19 +22,19 @@ abstract class AlgorithmViewModel {
     var pattern by mutableStateOf("")
         private set
 
-    //Индекс символа текста, относительно которого стартует паттерн поиска. В алгоритмах это копия переменной i.
+    //Индекс символа текста, относительно которого стартует образец поиска. В алгоритмах это копия переменной i.
     var textIndex by mutableStateOf(0)
         private set
-    //Индекс последнего символа паттерна (тоже относительно текста).
+    //Индекс последнего символа образца (тоже относительно текста).
     var lastIndex by mutableStateOf(0)
         private set
-    //Индекс сравниваемого символа относительно паттерна. Нужен для пометки сравниваемого символа в UI
+    //Индекс сравниваемого символа относительно образца. Нужен для пометки сравниваемого символа в UI
     var compIndex by mutableStateOf<Int?>(null)
         protected set
-    //Индекс первого (левого) символа среди сопоставленных относительно паттерна
+    //Индекс первого (левого) символа среди сопоставленных относительно образца
     var matchedFirst by mutableStateOf<Int?>(null)
         private set
-    //Индекс последнего (правого) символа среди сопоставленных относительно паттерна
+    //Индекс последнего (правого) символа среди сопоставленных относительно образца
     var matchedLast by mutableStateOf<Int?>(null)
         private set
 
@@ -85,10 +85,6 @@ abstract class AlgorithmViewModel {
         } else {
             matchedLast = matchedLast!! + offset
         }
-    }
-    protected fun matchAll() {
-        matchedFirst = 0
-        matchedLast = pattern.length - 1
     }
     protected fun clearMatch() {
         matchedFirst = null

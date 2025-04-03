@@ -61,15 +61,15 @@ class MainViewModel {
             }
             is MainAction.ExecuteSearch -> {
                 if(text.isEmpty()) {
-                    scope.launch { _error.send("Ошибка: Текст пустой") }
+                    scope.launch { _error.send("Ошибка: Поле с текстом пустое") }
                     return
                 }
                 if(pattern.isEmpty()) {
-                    scope.launch { _error.send("Ошибка: Искомая строка пустая") }
+                    scope.launch { _error.send("Ошибка: Поле с образцом пустое") }
                     return
                 }
                 if(pattern.length > text.length) {
-                    scope.launch { _error.send("Ошибка: Искомая строка больше текста") }
+                    scope.launch { _error.send("Ошибка: Образец больше текста") }
                     return
                 }
 

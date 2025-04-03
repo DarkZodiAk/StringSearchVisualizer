@@ -17,6 +17,7 @@ import rabin_karp.RKScreen
 import boyermoore.BMScreen
 import kmp.KMPScreen
 import components.AlgorithmBlock
+import components.AppButton
 import components.AppTextField
 import components.TextMedium
 import kotlinx.coroutines.launch
@@ -45,7 +46,7 @@ fun App(viewModel: MainViewModel) {
 
             Spacer(Modifier.height(16.dp))
 
-            TextMedium("Искомая строка")
+            TextMedium("Образец для поиска")
             Spacer(Modifier.height(8.dp))
             AppTextField(
                 value = viewModel.pattern,
@@ -65,7 +66,8 @@ fun App(viewModel: MainViewModel) {
                     RadioButton(
                         selected = viewModel.algorithm == algo,
                         onClick = { viewModel.onAction(MainAction.SwitchAlgorithm(algo)) },
-                        enabled = !viewModel.isSearchWorking
+                        enabled = !viewModel.isSearchWorking,
+                        colors = RadioButtonDefaults.colors(selectedColor = Color(0, 102, 204))
                     )
                     Text(algo.text)
                 }
@@ -77,12 +79,12 @@ fun App(viewModel: MainViewModel) {
                 .fillMaxWidth(1f)
                 .border(1.dp, Color.Black)
         ) {
-            // Панель управления процессом
+            //Верхняя панель управления
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
             ) {
-                Button(
+                AppButton(
                     onClick = { viewModel.onAction(MainAction.ExecuteSearch()) },
                     enabled = !viewModel.isSearchWorking
                 ) {
@@ -100,7 +102,7 @@ fun App(viewModel: MainViewModel) {
                         contentDescription = null
                     )
                 }
-                Button(
+                AppButton(
                     onClick = { viewModel.onAction(MainAction.Reset()) },
                     enabled = !viewModel.isPlaying
                 ) {
@@ -126,6 +128,7 @@ fun App(viewModel: MainViewModel) {
                 }
             }
 
+            //Нижняя панель управления
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
@@ -136,6 +139,12 @@ fun App(viewModel: MainViewModel) {
                         onValueChange = { viewModel.onAction(MainAction.ModifySpeed(it)) },
                         steps = 50,
                         valueRange = 50f..2000f,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0, 102, 204),
+                            activeTrackColor = Color(51, 153, 255),
+                            activeTickColor = Color.Transparent,
+                            inactiveTickColor = Color.Transparent
+                        ),
                         modifier = Modifier.width(200.dp)
                     )
                     Text(
@@ -143,13 +152,13 @@ fun App(viewModel: MainViewModel) {
                         modifier = Modifier.offset(y = (-8).dp)
                     )
                 }
-                Button(
+                AppButton(
                     onClick = { viewModel.onAction(MainAction.StepForward()) },
                     enabled = viewModel.isSearchWorking && !viewModel.isPlaying
                 ) {
                     Text("Шаг вперед")
                 }
-                Button(
+                AppButton(
                     onClick = { viewModel.onAction(MainAction.SkipToFinish()) },
                     enabled = viewModel.isSearchWorking && !viewModel.isPlaying
                 ) {
